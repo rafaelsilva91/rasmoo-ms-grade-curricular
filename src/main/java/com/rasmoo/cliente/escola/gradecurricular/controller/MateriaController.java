@@ -1,12 +1,10 @@
 package com.rasmoo.cliente.escola.gradecurricular.controller;
 
-import com.rasmoo.cliente.escola.gradecurricular.entities.MateriaEntity;
+import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
 import com.rasmoo.cliente.escola.gradecurricular.repositories.IMateriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.SpelQueryContext;
+import com.rasmoo.cliente.escola.gradecurricular.services.MateriaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,56 +14,42 @@ import java.util.Optional;
 @RequestMapping("/materia")
 public class MateriaController {
 
-    private IMateriaRepository repository;
+    private MateriaService service;
 
-    public MateriaController(IMateriaRepository repository) {
-        this.repository = repository;
+    public MateriaController(MateriaService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<MateriaEntity>> findAll(){
-        List list = repository.findAll();
+    public ResponseEntity<List<Materia>> findAll(){
+        List list = service.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MateriaEntity> findById(@PathVariable Long id){
-        Optional<MateriaEntity> materia = this.repository.findById(id);
-        MateriaEntity value = materia.isPresent() ? materia.get() : null;
+    public ResponseEntity<Materia> findById(@PathVariable Long id){
+        Optional<Materia> materia = this.service.findById(id);
+        Materia value = materia.isPresent() ? materia.get() : null;
         return ResponseEntity.status(HttpStatus.OK).body(value);
     }
 
     @PostMapping
-    public ResponseEntity<MateriaEntity> insert(@RequestBody MateriaEntity resquest) throws Exception {
-        try {
-
-            MateriaEntity materia = this.repository.save(resquest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(materia);
-
-        }catch (Exception e){
-            throw new Exception("Falha ao salvar registro", e);
-        }
+    public ResponseEntity<Materia> insert(@RequestBody Materia resquest) {
+        Materia materia = this.service.insert(resquest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(materia);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MateriaEntity> update(@RequestBody MateriaEntity request, @PathVariable Long id) throws Exception {
+    public ResponseEntity<Materia> update(@RequestBody Materia request, @PathVariable Long id) throws Exception {
+        Optional<Materia> materia = Optional.ofNullable(this.service.update(request, id));
 
-        return repository
-                .findById(id)
-                .map(c ->{
-                     request.setId(c.getId());
-                    repository.save(request);
-                    return ResponseEntity.status(HttpStatus.OK).body(request);
-                }).orElseThrow(() -> new Exception(String.valueOf(HttpStatus.NOT_FOUND)));
+        return ResponseEntity.status(HttpStatus.OK).body(materia.get());
 
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        Optional<MateriaEntity> materia = this.repository.findById(id);
-        if(materia.isPresent()){
-            this.repository.delete(materia.get());
-        }
+        this.service.delete(id);
     }
 
 

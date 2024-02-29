@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
 
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @Table(name = "tb_materia")
 @Data
 @NoArgsConstructor
-public class MateriaEntity implements Serializable {
+public class Materia implements Serializable {
 
     private static final long serialVersionUID = 1;
 
