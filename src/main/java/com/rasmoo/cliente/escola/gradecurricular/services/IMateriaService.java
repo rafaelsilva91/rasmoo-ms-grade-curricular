@@ -1,20 +1,20 @@
 package com.rasmoo.cliente.escola.gradecurricular.services;
 
-import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
-import com.rasmoo.cliente.escola.gradecurricular.repositories.IMateriaRepository;
+import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
+import com.rasmoo.cliente.escola.gradecurricular.entities.MateriaEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IMateriaService {
 
-    public List<Materia> findAll();
+    public List<MateriaDto> findAll();
 
-    public Optional<Materia> findById(Long id) ;
+    public Optional<MateriaEntity> findById(Long id) ;
 
-    public Materia insert(Materia materia);
+    public MateriaEntity insert(MateriaDto materiaDto);
 
-    public Materia update (Materia materia, Long id);
+    public MateriaEntity update (MateriaDto materiaDto);
     public void delete(Long id);
 
 }

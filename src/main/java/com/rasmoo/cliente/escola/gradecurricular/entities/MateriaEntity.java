@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Table(name = "tb_materia")
 @Data
 @NoArgsConstructor
-public class Materia implements Serializable {
+public class MateriaEntity implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -34,8 +34,5 @@ public class Materia implements Serializable {
 
     @Column(name = "frequencia")
     private int frequency;
-
-
-
 
 }

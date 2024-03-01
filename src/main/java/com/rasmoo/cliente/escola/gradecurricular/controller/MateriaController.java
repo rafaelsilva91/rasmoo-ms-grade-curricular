@@ -1,8 +1,9 @@
 package com.rasmoo.cliente.escola.gradecurricular.controller;
 
-import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
-import com.rasmoo.cliente.escola.gradecurricular.repositories.IMateriaRepository;
-import com.rasmoo.cliente.escola.gradecurricular.services.MateriaService;
+import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
+import com.rasmoo.cliente.escola.gradecurricular.entities.MateriaEntity;
+import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,37 +15,39 @@ import java.util.Optional;
 @RequestMapping("/materia")
 public class MateriaController {
 
-    private MateriaService service;
+    private IMateriaService service;
 
-    public MateriaController(MateriaService service) {
+    public MateriaController(IMateriaService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<Materia>> findAll(){
-        List list = service.findAll();
+    public ResponseEntity<List<MateriaDto>> findAll(){
+        List<MateriaDto> list = this.service.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Materia> findById(@PathVariable Long id){
-        Optional<Materia> materia = this.service.findById(id);
-        Materia value = materia.isPresent() ? materia.get() : null;
-        return ResponseEntity.status(HttpStatus.OK).body(value);
+    public ResponseEntity<MateriaDto> findById(@PathVariable Long id){
+        Optional<MateriaEntity> materia = this.service.findById(id);
+        MateriaEntity materiaEntity = materia.isPresent() ? materia.get() : null;
+        MateriaDto materiaDto = new MateriaDto(materiaEntity);
+        return ResponseEntity.status(HttpStatus.OK).body(materiaDto);
     }
 
     @PostMapping
-    public ResponseEntity<Materia> insert(@RequestBody Materia resquest) {
-        Materia materia = this.service.insert(resquest);
+    public ResponseEntity<MateriaDto> insert(@Valid @RequestBody MateriaDto materiaDto) {
+        MateriaEntity materiaEntity = this.service.insert(materiaDto);
+        MateriaDto materia = new MateriaDto(materiaEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(materia);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Materia> update(@RequestBody Materia request, @PathVariable Long id) throws Exception {
-        Optional<Materia> materia = Optional.ofNullable(this.service.update(request, id));
+    @PutMapping
+    public ResponseEntity<MateriaDto> update(@Valid @RequestBody MateriaDto materiaDto) {
+        MateriaEntity materiaEntity = this.service.update(materiaDto);
+        MateriaDto materia = new MateriaDto(materiaEntity);
 
-        return ResponseEntity.status(HttpStatus.OK).body(materia.get());
-
+        return ResponseEntity.status(HttpStatus.OK).body(materia);
     }
 
     @DeleteMapping("/{id}")
