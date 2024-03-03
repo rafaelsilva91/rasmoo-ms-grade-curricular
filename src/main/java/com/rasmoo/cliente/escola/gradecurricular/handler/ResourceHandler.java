@@ -1,8 +1,7 @@
 package com.rasmoo.cliente.escola.gradecurricular.handler;
 
 import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
-import com.rasmoo.cliente.escola.gradecurricular.model.ErrorMapResponse;
-import com.rasmoo.cliente.escola.gradecurricular.model.ErrorResponse;
+import com.rasmoo.cliente.escola.gradecurricular.model.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,34 +17,53 @@ import java.util.Map;
 public class ResourceHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorMapResponse> handlerMethodArgumentNotValidException(MethodArgumentNotValidException m){
+    public ResponseEntity<Response<Map<String, String>>> handlerMethodArgumentNotValidException(MethodArgumentNotValidException m) {
 
         Map<String, String> erros = new HashMap<>();
         m.getBindingResult()
                 .getAllErrors()
-                .forEach(erro->{
-                    String campo = ((FieldError)erro).getField();
+                .forEach(erro -> {
+                    String campo = ((FieldError) erro).getField();
                     String mensagem = erro.getDefaultMessage();
                     erros.put(campo, mensagem);
                 });
 
-        ErrorMapResponse.ErrorMapResponseBuilder errorMap = ErrorMapResponse.builder();
+        Response<Map<String, String>> response = new Response<>();
+        response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        response.setData(erros);
 
-        errorMap.erros(erros)
-                .httpStatus(HttpStatus.BAD_REQUEST.value())
-                .timeStamp(System.currentTimeMillis());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap.build());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
     @ExceptionHandler(MateriaException.class)
-    public ResponseEntity<ErrorResponse> handlerMateriaException(MateriaException m){
-        ErrorResponse.ErrorResponseBuilder erro = ErrorResponse.builder();
-        erro.httpStatus(m.getHttpStatus().value());
-        erro.mensagem(m.getMessage());
-        erro.timestamp(System.currentTimeMillis());
+    public ResponseEntity<Response<String>> handlerMateriaException(MateriaException m) {
+        Response<String> response = new Response<>();
 
-        return ResponseEntity.status(m.getHttpStatus()).body(erro.build());
+        response.setStatusCode(m.getHttpStatus().value());
+        response.setData(m.getMessage());
+
+        return ResponseEntity.status(m.getHttpStatus()).body(response);
     }
 
 
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<ErrorMapResponse> handlerMethodArgumentNotValidException(MethodArgumentNotValidException m){
+//
+//        Map<String, String> erros = new HashMap<>();
+//        m.getBindingResult()
+//                .getAllErrors()
+//                .forEach(erro->{
+//                    String campo = ((FieldError)erro).getField();
+//                    String mensagem = erro.getDefaultMessage();
+//                    erros.put(campo, mensagem);
+//                });
+//
+//        ErrorMapResponse.ErrorMapResponseBuilder errorMap = ErrorMapResponse.builder();
+//
+//        errorMap.erros(erros)
+//                .httpStatus(HttpStatus.BAD_REQUEST.value())
+//                .timeStamp(System.currentTimeMillis());
+//
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap.build());
+//    }
 }

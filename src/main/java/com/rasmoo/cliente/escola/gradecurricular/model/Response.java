@@ -11,4 +11,12 @@ public class Response<T> extends RepresentationModel<Response<T>> {
     private int statusCode;
     private T data;
 
+//    private String mensagem;
+//    private int httpStatus;
+    private long timestamp;
+
+    public Response(){
+        this.timestamp = System.currentTimeMillis();
+    }
+
 }
