@@ -1,5 +1,6 @@
 package com.rasmoo.cliente.escola.gradecurricular.services;
 
+import com.rasmoo.cliente.escola.gradecurricular.controller.MateriaController;
 import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
 import com.rasmoo.cliente.escola.gradecurricular.entities.MateriaEntity;
 import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
@@ -8,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -27,21 +29,20 @@ public class MateriaService implements IMateriaService {
         this.mapper = new ModelMapper();
     }
 
-    @Override
-    public MateriaEntity insert(MateriaDto materiaDto) {
-        try {
-            MateriaEntity materiaEntity = this.mapper.map(materiaDto, MateriaEntity.class);
-            return this.repository.save(materiaEntity);
-        } catch (Exception e) {
-            throw new MateriaException("Falha ao inserir registro", HttpStatus.BAD_REQUEST);
-        }
-    }
-
 //    @CachePut(unless = "#result.size()<3")
     @Override
     public List<MateriaDto> findAll() {
         try {
-            return this.mapper.map(this.repository.findAll(), new TypeToken<List<MateriaDto>>() {}.getType());
+            List<MateriaDto> materiaDto = this.mapper.map(this.repository.findAll(), new TypeToken<List<MateriaDto>>() {}.getType());
+            materiaDto.forEach(materia->{
+                materia.add(WebMvcLinkBuilder
+                        .linkTo(WebMvcLinkBuilder
+                                .methodOn(MateriaController.class)
+                                .findById(materia.getId()))
+                        .withSelfRel());
+            });
+
+            return materiaDto;
         } catch (Exception e) {
             throw new MateriaException("Falha ao retornar lista de Matérias", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -64,6 +65,16 @@ public class MateriaService implements IMateriaService {
         }
     }
 
+    @Override
+    public MateriaEntity insert(MateriaDto materiaDto) {
+        try {
+            MateriaEntity materiaEntity = this.mapper.map(materiaDto, MateriaEntity.class);
+            return this.repository.save(materiaEntity);
+        } catch (Exception e) {
+            throw new MateriaException("Falha ao inserir registro", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 //    @CacheEvict (key = "#materia.id")
     public MateriaEntity update(MateriaDto materiaDto) {
         this.findById(materiaDto.getId());
@@ -73,13 +84,16 @@ public class MateriaService implements IMateriaService {
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         Optional<MateriaEntity> materia = this.findById(id);
         if (materia.isPresent()) {
             this.repository.delete(materia.get());
+            return true;
         }
 
+        return false;
     }
+
 }
 
 

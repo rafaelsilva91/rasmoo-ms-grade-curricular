@@ -1,16 +1,20 @@
 package com.rasmoo.cliente.escola.gradecurricular.dto;
 
 import com.rasmoo.cliente.escola.gradecurricular.entities.MateriaEntity;
+import com.rasmoo.cliente.escola.gradecurricular.model.Response;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @NoArgsConstructor
-public class MateriaDto {
+@EqualsAndHashCode(callSuper = false)
+public class MateriaDto extends RepresentationModel<MateriaDto> {
 
     public MateriaDto(MateriaEntity materiaEntity) {
         this.id = materiaEntity.getId();

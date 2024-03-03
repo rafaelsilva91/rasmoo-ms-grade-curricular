@@ -17,6 +17,6 @@ public interface IMateriaService {
 
     public MateriaEntity update(MateriaDto materiaDto);
 
-    public void delete(Long id);
+    public boolean delete(Long id);
 
 }
