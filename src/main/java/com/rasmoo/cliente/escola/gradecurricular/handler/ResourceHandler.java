@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.rasmoo.cliente.escola.gradecurricular.model.ErrorResponse.builder;
 
 @ControllerAdvice
 public class ResourceHandler {
@@ -40,7 +39,7 @@ public class ResourceHandler {
     }
     @ExceptionHandler(MateriaException.class)
     public ResponseEntity<ErrorResponse> handlerMateriaException(MateriaException m){
-        ErrorResponse.ErrorResponseBuilder erro = builder();
+        ErrorResponse.ErrorResponseBuilder erro = ErrorResponse.builder();
         erro.httpStatus(m.getHttpStatus().value());
         erro.mensagem(m.getMessage());
         erro.timestamp(System.currentTimeMillis());

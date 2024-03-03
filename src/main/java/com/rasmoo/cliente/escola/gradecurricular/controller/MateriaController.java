@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/materia")
 public class MateriaController {
@@ -34,7 +35,6 @@ public class MateriaController {
         MateriaDto materiaDto = new MateriaDto(materiaEntity);
         return ResponseEntity.status(HttpStatus.OK).body(materiaDto);
     }
-
     @PostMapping
     public ResponseEntity<MateriaDto> insert(@Valid @RequestBody MateriaDto materiaDto) {
         MateriaEntity materiaEntity = this.service.insert(materiaDto);
@@ -54,6 +54,5 @@ public class MateriaController {
     public void delete(@PathVariable Long id){
         this.service.delete(id);
     }
-
 
 }
