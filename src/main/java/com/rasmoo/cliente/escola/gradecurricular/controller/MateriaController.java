@@ -59,6 +59,23 @@ public class MateriaController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/frequencia/{frequency}")
+    public ResponseEntity<Response<List<MateriaDto>>> findByFrequencia(@PathVariable int frequency) {
+        Response<List<MateriaDto>> response = new Response<>();
+
+        List<MateriaDto> materiaDto = this.service.listarPorFrequencia(frequency);
+
+        response.setData(materiaDto);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.add(WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder
+                        .methodOn(MateriaController.class)
+                        .findByFrequencia(frequency))
+                .withSelfRel());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response<MateriaDto>> findById(@PathVariable Long id) {
         Response<MateriaDto> response = new Response<>();
