@@ -19,4 +19,6 @@ public interface IMateriaService {
 
     public boolean delete(Long id);
 
+    public List<MateriaDto> listarPorHoraMinima(long horaMinima);
+
 }

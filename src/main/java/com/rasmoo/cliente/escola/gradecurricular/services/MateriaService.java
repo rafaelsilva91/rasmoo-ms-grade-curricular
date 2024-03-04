@@ -94,6 +94,30 @@ public class MateriaService implements IMateriaService {
         return false;
     }
 
+    public List<MateriaDto> listarPorHoraMinima(long minimumHour){
+        try {
+            List<MateriaDto> materiaDto = this.mapper.map(this.repository.findByHhoraMinima(minimumHour), new TypeToken<List<MateriaDto>>() {}.getType());
+            materiaDto.forEach(materia->{
+                materia.add(WebMvcLinkBuilder
+                        .linkTo(WebMvcLinkBuilder
+                                .methodOn(MateriaController.class)
+                                .findByMinimumHour(minimumHour))
+                        .withSelfRel());
+            });
+
+            if (!materiaDto.isEmpty()) {
+                return materiaDto;
+            }
+            throw new MateriaException("Matéria não encontrada", HttpStatus.NOT_FOUND);
+            //throw new Exception(); Forcando exception Internal_server_error
+        } catch (MateriaException m) {
+            throw m;
+        } catch (Exception e) {
+            throw new MateriaException("Erro interno Identificado. Contate o suporte", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
 
 

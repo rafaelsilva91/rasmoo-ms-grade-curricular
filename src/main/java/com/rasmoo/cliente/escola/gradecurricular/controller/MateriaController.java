@@ -42,6 +42,23 @@ public class MateriaController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/minimumHour/{miniMumHour}")
+    public ResponseEntity<Response<List<MateriaDto>>> findByMinimumHour(@PathVariable Long miniMumHour) {
+        Response<List<MateriaDto>> response = new Response<>();
+
+        List<MateriaDto> materiaDto = this.service.listarPorHoraMinima(miniMumHour);
+
+        response.setData(materiaDto);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.add(WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder
+                        .methodOn(MateriaController.class)
+                        .findByMinimumHour(miniMumHour))
+                .withSelfRel());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response<MateriaDto>> findById(@PathVariable Long id) {
         Response<MateriaDto> response = new Response<>();
@@ -75,6 +92,7 @@ public class MateriaController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
     @PostMapping
     public ResponseEntity<Response<MateriaDto>> insert(@Valid @RequestBody MateriaDto materiaDto) {
