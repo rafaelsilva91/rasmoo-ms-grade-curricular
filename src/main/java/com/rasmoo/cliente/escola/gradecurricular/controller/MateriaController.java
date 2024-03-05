@@ -2,6 +2,7 @@ package com.rasmoo.cliente.escola.gradecurricular.controller;
 
 import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
 import com.rasmoo.cliente.escola.gradecurricular.entities.MateriaEntity;
+import com.rasmoo.cliente.escola.gradecurricular.enums.EnumHyperlink;
 import com.rasmoo.cliente.escola.gradecurricular.model.Response;
 import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
 import jakarta.validation.Valid;
@@ -10,16 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/materia")
 public class MateriaController {
-
-    private static final String DELETE = "DELETE";
-    private static final String UPDATE = "UPDATE";
-    private static final String INSERT = "INSERT";
 
     private IMateriaService service;
 
@@ -95,17 +93,17 @@ public class MateriaController {
         response.add(WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder
                         .methodOn(MateriaController.class).insert(materiaDto))
-                .withRel(INSERT));
+                .withRel(EnumHyperlink.CADASTRAR.getValor()));
 
         response.add(WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder
                         .methodOn(MateriaController.class).update(materiaDto))
-                .withRel(UPDATE));
+                .withRel(EnumHyperlink.ATUALIZAR.getValor()));
 
         response.add(WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder
                         .methodOn(MateriaController.class).delete(id))
-                .withRel(DELETE));
+                .withRel(EnumHyperlink.EXCLUIR.getValor()));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

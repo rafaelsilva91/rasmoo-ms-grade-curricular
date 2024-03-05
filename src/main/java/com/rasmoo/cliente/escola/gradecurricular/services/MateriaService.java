@@ -8,7 +8,6 @@ import com.rasmoo.cliente.escola.gradecurricular.repositories.IMateriaRepository
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.*;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
